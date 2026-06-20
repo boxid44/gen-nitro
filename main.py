@@ -5,7 +5,7 @@ import string
 import time
 import sys
 
-BASE_URL = "https://discord.com/billing/promotions/"
+BASE_URL = "https://discord.com/gift/"
 # ----------------------------------------------------------
 DISCORD_WEBHOOK_URL = "add your own webhook"
 # ----------------------------------------------------------
@@ -120,25 +120,22 @@ async def worker(queue: asyncio.Queue, session: aiohttp.ClientSession,
                     if response.status == 429 or response.status >= 500:
                         await limiter.report_rate_limit(response.status)
                         await queue.put(url)
-                        queue.task_done()
-                        continue
+                        continue  
 
                     await limiter.report_success()
 
                     if response.status in [301, 302]:
-                        queue.task_done()
                         continue
 
                     if response.status == 200:
                         page_text = await response.text()
                         if any(p in page_text.lower() for p in ["invalid", "błąd", "expired", "not found", "error"]):
-                            queue.task_done()
                             continue
                         
                         stats.increment_valid()
-                        print(f"\n\n [find correct link!] {url}\n")
-                        await writer.append_line(f"{url} - poprawny")
-                        await send_to_discord(session, f"code find correct**\nLink: {url}")
+                        print(f"\n\n [correct code!] {url}\n")
+                        await writer.append_line(f"{url} - correct")
+                        await send_to_discord(session, f" **find correct link!**\nLink: {url}")
                         
             except Exception:
                 pass
