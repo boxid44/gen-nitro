@@ -136,7 +136,7 @@ async def worker(queue: asyncio.Queue, session: aiohttp.ClientSession,
                             continue
                         
                         stats.increment_valid()
-                        print(f"\n\n🎉 [find correct link!] {url}\n")
+                        print(f"\n\n [find correct link!] {url}\n")
                         await writer.append_line(f"{url} - poprawny")
                         await send_to_discord(session, f"code find correct**\nLink: {url}")
                         
