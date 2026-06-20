@@ -33,7 +33,7 @@ class RateLimiter:
             self.backoff_tier += 1
             self.is_blocked = True
             self.current_delay = float(2 ** self.backoff_tier)
-            print(f"\n[BLOKADA API] Kod {status_code}. Anty-spam lock na {self.current_delay}s...")
+            print(f"\n[lock API] Kod {status_code}. Anty-spam lock for {self.current_delay}s...")
             await asyncio.sleep(self.current_delay)
             self.is_blocked = False
 
